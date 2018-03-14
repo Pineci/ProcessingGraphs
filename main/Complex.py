@@ -16,6 +16,9 @@ class Complex(object):
     
     def conjugate(self):
         return Complex(self.real(), -1 * self.imag())
+    
+    def scale(self, factor):
+        return Complex(self.real() * factor, self.imag() * factor)
         
     def __add__(self, other):
         if type(other) is Complex:
@@ -24,22 +27,17 @@ class Complex(object):
             return Complex(self.real() + other, self.imag())
     
     def __mul__(self, other):
-        num = other
-        if type(other) is not Complex:
-            num = Complex(other, 0)
-        return Complex(self.real()*num.real() - self.imag()*num.imag(), self.real()*num.imag() + self.imag()*num.imag())
+        ac = self.real() * other.real()
+        bd = self.imag() * other.imag()
+        term = (self.real() + self.imag()) * (other.real() + other.imag())
+        return Complex(ac - bd, term - ac - bd)
     
     def __sub__(self, other):
-        num = other
-        if type(other) is not Complex:
-            num = Complex(other, 0)
         return self + (-1 * num)
     
     def __div__(self, other):
-        num = other
-        if type(other) is not Complex:
-            num = Complex(other, 0)
-        return 1/num.norm() * self * other.conjugate()
+        result = self * other.conjugate()
+        return result.scale(1/other.norm())
     
     def __str__(self):
         space = ""
